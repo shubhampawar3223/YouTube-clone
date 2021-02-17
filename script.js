@@ -22,8 +22,8 @@ async function loadpopularVideos(){
         for(let i=0;i< videoData.items.length;i++){
             createVideoContent(videoData.items[i])
         }
-        console.log(videoData);
-        // createVideoContent(videoData.items[0])
+        
+        
 }
 
 function createVideoContent(data){
@@ -36,11 +36,14 @@ function createVideoContent(data){
       frame1.src = "https://www.youtube.com/embed/"+eg1;
       let p1= document.createElement("p");
       p1.innerHTML=data.snippet.title;
-      
+      p1.style.fontSize="18px";
+      p1.style.fontWeight="bold";
+
       let a1 = document.createElement("a");
       a1.setAttribute("class",data.snippet.channelId);
       a1.style.fontSize="17px";
       a1.style.fontWight="50px";
+      a1.style.cursor="pointer";
       a1.addEventListener("mouseover", function( event ) {
         
         event.target.style.color = "red";
@@ -73,10 +76,10 @@ document.querySelector(".but").addEventListener("click",()=>{
     search(document.querySelector(".in").value);
 })
 
+//to call search api.
 async function search(item){
     let response = await fetch("https://www.googleapis.com/youtube/v3/search?part=snippet&key="+key+"&maxResults=20&q="+item)
     let result =  await response.json();
-    console.log(result);
     showVideos(result);
 }
 
@@ -91,9 +94,7 @@ function showVideos(result){
     insertFrame(result.items[i])
     else if("channelId" in result.items[i].id)
     insertChannel(result.items[i])
-    else
-    console.log("playlistId")
-    //insertChannel(result.items[i])
+
     }
 
 }
@@ -112,9 +113,12 @@ function insertFrame(data){
     
 
     let div12 =  document.createElement("div");
-    div12.setAttribute("class","col-12 col-lg-6 col-xl-8")
+    div12.setAttribute("class","col-12 col-lg-8 col-xl-8")
     let p1 = document.createElement("p");
     p1.innerHTML=data.snippet.title;
+    p1.style.fontSize="18px";
+    p1.style.fontWeight="bold";
+
     let p2 = document.createElement("p");
     p2.innerHTML=data.snippet.publishedAt;
     let a3 = document.createElement("a");
@@ -122,6 +126,7 @@ function insertFrame(data){
     a3.setAttribute("class",data.snippet.channelId);
     a3.style.fontSize="20px";
     a3.style.fontWight="50px";
+    a3.style.cursor="pointer";
     a3.addEventListener("mouseover", function( event ) {
         
         event.target.style.color = "red";
@@ -160,8 +165,9 @@ async function insertChannel(data){
     div12.setAttribute("class","col-12 col-lg-6 col-xl-8")
     let a1 = document.createElement("a");
     a1.setAttribute("class",data.snippet.channelId);
-    a1.style.fontSize="20px";
-    a1.style.fontWight="50px";
+    a1.style.fontSize="18px";
+    a1.style.fontWeight="bold";
+    a1.style.cursor="pointer";
     a1.addEventListener("mouseover", function( event ) {
         
         event.target.style.color = "red";
@@ -195,10 +201,8 @@ async function  getChannelInfo(channelId){
         channelPageElement2.innerHTML="";
         let channelResponse = await fetch("https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics%2CcontentOwnerDetails&id="+channelId+"&key="+key)
         let channelData = await channelResponse.json();
-        console.log(channelData);
         let channelplayListResponse = await fetch("https://youtube.googleapis.com/youtube/v3/playlists?part=snippet%2CcontentDetails&channelId="+channelId+"&maxResults=25&key="+key)
         let channelPlayListData = await channelplayListResponse.json();
-        console.log(channelPlayListData); 
         //showChannelPage() is called here... to create channel info page
          showChannelPage(channelData,channelPlayListData);
     }
@@ -229,8 +233,8 @@ function createHeadElement(data){
         div12.setAttribute("class","col-12 col-lg-6 col-xl-8")
         let a1 = document.createElement("a");
         a1.setAttribute("class",data.items[0].id);
-        a1.style.fontSize="20px";
-        a1.style.fontWight="50px";
+        a1.style.fontSize="18px";
+        a1.style.fontWeight="bold";
         a1.addEventListener("mouseover", function( event ) {
             
             event.target.style.color = "red";
@@ -245,6 +249,7 @@ function createHeadElement(data){
             getChannelInfo(e.target.className);
         })  
         a1.innerHTML =data.items[0].snippet.localized.title;
+        a1.style.cursor="pointer";
         let p2 = document.createElement("p");
         p2.innerHTML="Subscribers: "+ data.items[0].statistics.subscriberCount;
         let p3 = document.createElement("p");
@@ -264,6 +269,7 @@ function createMiddleBar(channelData,channelPlayListData){
    div31.setAttribute("class","col-2 col-md-2 col-lg-1 col-xl-1 p-1 border")
    let a1 = document.createElement("a");
    a1.innerHTML = "Playlist";
+   a1.style.cursor="pointer";
    a1.addEventListener("mouseover", function( event ) {
             
     event.target.style.color = "red";
@@ -285,6 +291,7 @@ function createMiddleBar(channelData,channelPlayListData){
    div33.setAttribute("class","col-2 col-md-2 col-lg-1 col-xl-1 p-1 border")
    let a3 = document.createElement("a");
    a3.innerHTML = "About";
+   a3.style.cursor="pointer";
    a3.addEventListener("mouseover", function( event ) {
             
     event.target.style.color = "red";
@@ -296,7 +303,6 @@ function createMiddleBar(channelData,channelPlayListData){
     }, false);
 
    div33.addEventListener("click",(e)=>{
-    console.log("3")
     about(channelData);
    })  
 
@@ -324,6 +330,7 @@ function showPlayList(channelPlayListData){
     let a1 = document.createElement("a");
     a1.innerHTML= channelPlayListData.items[i].snippet.title;
     a1.setAttribute("class",channelPlayListData.items[i].id)
+    a1.style.cursor="pointer";
     a1.addEventListener("mouseover", function( event ) {
             
         event.target.style.color = "red";
@@ -353,7 +360,7 @@ async function showThatPlaylist(id){
     let plResponse = await fetch("https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=40&playlistId="+id+"&key="+key)
     let plData = await plResponse.json();
     
-    console.log(plData);
+    
     for(let i=0; i< plData.items.length;i++){
         insertFrame1(plData.items[i])
     }
@@ -379,10 +386,12 @@ function insertFrame1(data){
     div12.setAttribute("class","col-12 col-lg-6 col-xl-8")
     let p1 = document.createElement("p");
     p1.innerHTML=data.snippet.title;
+    p1.style.fontSize="18px";
+    p1.style.fontWeight="bold";
     let p2 = document.createElement("p");
     p2.innerHTML=data.snippet.publishedAt;
     let a3 = document.createElement("a");
-  
+    a3.style.cursor="pointer";
     a3.setAttribute("class",data.snippet.channelId);
     a3.style.fontSize="20px";
     a3.style.fontWight="50px";
@@ -412,7 +421,7 @@ function insertFrame1(data){
 
 
 function about(channelData){
-    console.log(channelData.items[0])
+    
     channelPageElement2.innerHTML="";
     let p1 = document.createElement("p")
     p1.innerHTML="Country: " + channelData.items[0].snippet.country;
